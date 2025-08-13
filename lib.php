@@ -267,11 +267,12 @@ function scormremote_pluginfile($course, $cm, $context, $filearea, $args, $force
             exit($OUTPUT->render_from_template('mod_scormremote/init', ['datasource' => $errorurl]));
         }
 
+        $tier = new tier($sub->get('tierid'));
+
         // Does the user exist and are they part of the subscription?
         $user = utils::get_user($client, $username);
         if (!$user || !$sub->contains_user($user->id)) {
             // If user or sub doesn't exist create, only when seats are higher then participant count.
-            $tier = new tier($sub->get('tierid'));
             if ( $sub->get_participant_count() >= (int) $tier->get('seats') ) {
                 // Create event: seat allocation limit reached.
                 $event = \mod_scormremote\event\remote_view_error::create([
@@ -313,6 +314,43 @@ function scormremote_pluginfile($course, $cm, $context, $filearea, $args, $force
                 ]
             ]);
             $event->trigger();
+        }
+
+        // Handle credit usage.
+        if ($tier->get('credits') > 0) {
+            $conditions = [
+                'clientid' => $client->get('id'),
+                'userid' => $user->id,
+                'courseid' => $course->id,
+            ];
+            if (!$DB->record_exists('scormremote_credit_usage', $conditions)) {
+                $yearstart = mktime(0, 0, 0, 1, 1, date('Y'));
+                $creditcount = $DB->count_records_select('scormremote_credit_usage', 'clientid = :clientid AND timecreated >= :yearstart', [
+                    'clientid' => $client->get('id'),
+                    'yearstart' => $yearstart,
+                ]);
+                if ($creditcount >= (int)$tier->get('credits')) {
+                    // Create event: credit limit reached.
+                    \mod_scormremote\event\remote_view_error::create([
+                        'context' => $context,
+                        'courseid' => $course->id,
+                        'relateduserid' => $user->id,
+                        'other' => [
+                            'reason' => get_string('event_creditlimitreached', 'mod_scormremote', [
+                                'clientname' => $client->get('name'),
+                                'creditlimit' => $tier->get('credits'),
+                                'origin' => $origin,
+                            ]),
+                        ]
+                    ])->trigger();
+                    $errorurl = $CFG->wwwroot . "/mod/scormremote/error.php?error=creditlimitreached&origin=" . $origin;
+                    header('Content-Type: text/javascript');
+                    exit($OUTPUT->render_from_template('mod_scormremote/init', ['datasource' => $errorurl]));
+                }
+                $record = (object)$conditions;
+                $record->timecreated = time();
+                $DB->insert_record('scormremote_credit_usage', $record);
+            }
         }
 
         // Check if this user is_enrolled in this course.

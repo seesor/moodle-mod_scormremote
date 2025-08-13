@@ -67,6 +67,14 @@ switch ($errorstring) {
         ];
         $PAGE->set_title('402 Payment Required');
         break;
+    case 'creditlimitreached':
+        $templatedata = [
+            'errorcode'    => 402,
+            'errortitle'   => get_string('errorpage_creditlimittitle', 'mod_scormremote'),
+            'errormessage' => get_string('errorpage_creditlimitmessage', 'mod_scormremote', ['domain' => $originstring]),
+        ];
+        $PAGE->set_title('402 Payment Required');
+        break;
     case 'nomanualenrolmentinstance':
         $templatedata = [
             'errorcode'    => 401,

@@ -160,6 +160,8 @@ if (!$editing && !$deleting) {
     $table->head = [
         get_string('manage_tiername', 'mod_scormremote'),
         get_string('manage_tierseats', 'mod_scormremote'),
+        get_string('manage_tiercredits', 'mod_scormremote'),
+        get_string('manage_tiercourses', 'mod_scormremote'),
         get_string('manage_tierdescription', 'mod_scormremote'),
         'S / C / M *',
         get_string('actions'),
@@ -193,6 +195,8 @@ if (!$editing && !$deleting) {
         $table->data[] = [
             $tier->get('name'),
             $tier->get('seats'),
+            $tier->get('credits'),
+            $tier->get('maxcourses'),
             $tier->get('description'),
             implode(' / ', $scm),
             $editaction . $deleteaction,
