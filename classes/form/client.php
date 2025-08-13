@@ -83,7 +83,7 @@ class client extends \core\form\persistent {
         $tiers = array();
         foreach ($tierrecords as $tier) {
             $key   = $tier->get('id');
-            $value = "{$tier->get('name')} ( {$tier->get('seats')} seats )";
+            $value = "{$tier->get('name')} ( {$tier->get('seats')} ".get_string('seats', 'mod_scormremote').", {$tier->get('credits')} " . get_string('credits', 'mod_scormremote') . ", {$tier->get('maxcourses')} " . get_string('courses') . " )";
             $tiers[$key] = $value;
         }
 

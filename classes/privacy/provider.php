@@ -158,10 +158,19 @@ class provider implements
             'domain' => 'privacy:metadata:mod_scormremote:domain',
         ], 'privacy:metadata:mod_scormremote:scormremote_client_domains');
 
-        $collection->add_database_table('scormremote_client_domains', [
+        $collection->add_database_table('scormremote_tiers', [
             'name' => 'privacy:metadata:mod_scormremote:name',
             'seats' => 'privacy:metadata:mod_scormremote:seats',
-        ], 'privacy:metadata:mod_scormremote:scormremote_client_domains');
+            'credits' => 'privacy:metadata:mod_scormremote:credits',
+            'maxcourses' => 'privacy:metadata:mod_scormremote:maxcourses',
+        ], 'privacy:metadata:mod_scormremote:scormremote_tiers');
+
+        $collection->add_database_table('scormremote_credit_usage', [
+            'clientid' => 'privacy:metadata:mod_scormremote:scormremote_credit_usage:clientid',
+            'userid' => 'privacy:metadata:mod_scormremote:scormremote_credit_usage:userid',
+            'courseid' => 'privacy:metadata:mod_scormremote:scormremote_credit_usage:courseid',
+            'timecreated' => 'privacy:metadata:mod_scormremote:scormremote_credit_usage:timecreated',
+        ], 'privacy:metadata:mod_scormremote:scormremote_credit_usage');
 
         return $collection;
     }

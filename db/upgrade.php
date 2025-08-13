@@ -273,5 +273,45 @@ function xmldb_scormremote_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2024092701, 'scormremote');
     }
 
+    if ($oldversion < 2025041100) {
+
+        // Add credits field to scormremote_tiers.
+        $table = new xmldb_table('scormremote_tiers');
+        $field = new xmldb_field('credits', XMLDB_TYPE_INTEGER, '20', null, XMLDB_NOTNULL, null, '0', 'seats');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Add maxcourses field to scormremote_tiers.
+        $field = new xmldb_field('maxcourses', XMLDB_TYPE_INTEGER, '20', null, XMLDB_NOTNULL, null, '0', 'credits');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Define table scormremote_credit_usage to be created.
+        $table = new xmldb_table('scormremote_credit_usage');
+
+        // Adding fields to table scormremote_credit_usage.
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('clientid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('userid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('courseid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('timecreated', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+
+        // Adding keys to table scormremote_credit_usage.
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+        $table->add_key('foreign_client', XMLDB_KEY_FOREIGN, ['clientid'], 'scormremote_clients', ['id']);
+        $table->add_key('foreign_user', XMLDB_KEY_FOREIGN, ['userid'], 'user', ['id']);
+        $table->add_key('foreign_course', XMLDB_KEY_FOREIGN, ['courseid'], 'course', ['id']);
+
+        // Conditionally launch create table for scormremote_credit_usage.
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+        // Scormremote savepoint reached.
+        upgrade_mod_savepoint(true, 2025041100, 'scormremote');
+    }
+
     return true;
 }

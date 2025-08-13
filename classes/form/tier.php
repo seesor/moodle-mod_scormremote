@@ -50,6 +50,14 @@ class tier extends \core\form\persistent {
         $mform->addRule('seats', get_string('required'), 'required', null, 'server');
         $mform->setDefault('seats', 0);
 
+        $mform->addElement('text', 'credits', get_string('manage_tiercredits', 'mod_scormremote'));
+        $mform->setType('credits', PARAM_INT);
+        $mform->setDefault('credits', 0);
+
+        $mform->addElement('text', 'maxcourses', get_string('manage_tiercourses', 'mod_scormremote'));
+        $mform->setType('maxcourses', PARAM_INT);
+        $mform->setDefault('maxcourses', 0);
+
         $mform->addElement('textarea', 'description', get_string('manage_tierdescription', 'mod_scormremote'),
              'wrap="virtual" rows="5" cols="50"');
 

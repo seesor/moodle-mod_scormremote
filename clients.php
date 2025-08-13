@@ -190,7 +190,7 @@ if (!$editing && !$deleting) {
         $subs = array();
         foreach (subscription::get_records_by_clientid($client->get('id')) as $sub) {
             $tier = new tier($sub->get('tierid'));
-            $subs[] = "{$tier->get('name')} ( {$sub->get_participant_count()} / {$tier->get('seats')} )";
+            $subs[] = "{$tier->get('name')} ( {$sub->get_participant_count()} / {$tier->get('seats')} ".get_string('seats', 'mod_scormremote').", {$tier->get('credits')} ".get_string('credits', 'mod_scormremote').", {$tier->get('maxcourses')} " . get_string('courses') . " )";
         }
 
 

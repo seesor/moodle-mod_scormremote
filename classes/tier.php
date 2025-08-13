@@ -43,6 +43,16 @@ class tier extends \core\persistent {
                 'type' => PARAM_INT,
                 'description' => 'The amount of allocatable seats.'
             ),
+            'credits' => array(
+                'type' => PARAM_INT,
+                'description' => 'The amount of allocatable credits per year.',
+                'default' => 0,
+            ),
+            'maxcourses' => array(
+                'type' => PARAM_INT,
+                'description' => 'The maximum number of courses allowed.',
+                'default' => 0,
+            ),
             'description' => array(
                 'type' => PARAM_TEXT,
                 'description' => 'A description for this tier.'
@@ -123,6 +133,34 @@ class tier extends \core\persistent {
     protected function validate_seats(int $value) {
         if ($value < 0) {
             return new \lang_string('error_tierseatnumber', 'mod_scormremote');
+        }
+
+        return true;
+    }
+
+    /**
+     * Validate tier credits.
+     *
+     * @param int $value
+     * @return true|\lang_string
+     */
+    protected function validate_credits(int $value) {
+        if ($value < 0) {
+            return new \lang_string('error_tiercreditnumber', 'mod_scormremote');
+        }
+
+        return true;
+    }
+
+    /**
+     * Validate tier course limit.
+     *
+     * @param int $value
+     * @return true|\lang_string
+     */
+    protected function validate_maxcourses(int $value) {
+        if ($value < 0) {
+            return new \lang_string('error_tiercoursenumber', 'mod_scormremote');
         }
 
         return true;
