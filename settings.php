@@ -36,10 +36,16 @@ $tierslink = new admin_externalpage(
     get_string('manage_tiers', 'mod_scormremote'),
     new moodle_url('/mod/scormremote/tiers.php')
 );
+$reportlink = new admin_externalpage(
+    'scormremotereport',
+    get_string('report:scores', 'mod_scormremote'),
+    new moodle_url('/mod/scormremote/report.php')
+);
 $ADMIN->add('modsettings', $category);
 $ADMIN->add('modscormremotecat', $general);
 $ADMIN->add('modscormremotecat', $clientslink);
 $ADMIN->add('modscormremotecat', $tierslink);
+$ADMIN->add('modscormremotecat', $reportlink);
 
 $settings = null;
 
